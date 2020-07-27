@@ -33,18 +33,31 @@ class App extends Component {
       .catch( err => { console.log(err)})
   }
 
-  updatePost() {
-  
-  }
-
-  deletePost() {
-
-  }
-
-  createPost() {
+  updatePost( id, text) {
+    let apiCall = this.state.api + `posts?id=${ id }`
+    axios.put(apiCall, {text}).then( res => {
+      this.setState({
+        posts: res.data
+      })
+    })
 
   }
 
+  deletePost( id ) {
+    // apiCall: https://practiceapi.devmountain.com/api/
+    let apiCall = this.state.api + `posts?id=${ id }`
+    axios.delete(apiCall).then( results => {
+      this.setState({ posts: results.data });
+    });
+  }
+
+  createPost( text ) {
+    axios.post('https://practiceapi.devmountain.com/api/posts', { text }).then( results => {
+      this.setState({ posts: results.data });
+    });
+  }
+      
+      
   render() {
     const { posts } = this.state;
 
@@ -54,8 +67,8 @@ class App extends Component {
               id= { p.id }
               text= { p.text }
               date = { p.date }
-              updatePost = { this.updatePost }
-              deletePost = { this.deletePost}
+              updatePostFn = { this.updatePost }
+              deletePostFn = { this.deletePost}
           />
         )
       })
@@ -71,7 +84,8 @@ class App extends Component {
 
         <section className="App__content">
 
-          <Compose />
+          <Compose 
+            createPostFn = {this.createPost}/>
           {displayPosts}
         </section>
       </div>
